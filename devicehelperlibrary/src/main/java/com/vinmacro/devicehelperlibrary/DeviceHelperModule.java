@@ -1,31 +1,38 @@
 package com.vinmacro.devicehelperlibrary;
 
+import android.app.Activity;
 import android.content.Context;
-import javax.inject.Singleton;
+import android.view.WindowManager;
 
-import dagger.Module;
-import dagger.Provides;
-
-
-@Module
 public class DeviceHelperModule {
 
-    private Context context;
+    private static DeviceHelperModule deviceHelperModule;
 
-    public DeviceHelperModule(Context context) {
-        this.context = context;
+    private DeviceHelperModule() {
+
     }
 
-    @Singleton
-    @Provides
-    public Context provideContext() {
-        return context;
+    public static DeviceHelperModule getInstance() {
+        if (deviceHelperModule == null) deviceHelperModule = new DeviceHelperModule();
+        return deviceHelperModule;
     }
 
 
-    @Singleton
-    @Provides
-    public String getDeviceID(Context context){
+    public String getDeviceID(Context context) {
         return android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+    }
+
+    /*Below code keep the screen On until the APP is onSTOP*/
+    public void keepScreenOn(Activity activity) {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+
+    public void keepScreenOff(Activity activity) {
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    public void makeFullScreen(Activity activity) {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 }
